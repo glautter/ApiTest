@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApiVersioning();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddTransient<IPessoaService, PessoaService>();
 builder.Services.AddTransient<IPessoaRepository, PessoaRepository>();
@@ -37,5 +38,12 @@ app.UseAuthorization();
 app.UseApiVersioning();
 
 app.MapControllers();
+
+app.UseCors(c =>
+{
+    c.AllowAnyHeader();
+    c.AllowAnyMethod();
+    c.AllowAnyOrigin();
+});
 
 app.Run();

@@ -1,4 +1,6 @@
-﻿using Hex.Application.Interfaces;
+﻿using AutoMapper;
+using Hex.Application.Interfaces;
+using Hex.Domain.Dtos;
 using Hex.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +15,12 @@ namespace Hex.Api.Controllers
     {
         private readonly IPessoaService pessoaService;
 
-        public PessoaController(IPessoaService pessoaService)
+        public IMapper Mapper { get; }
+
+        public PessoaController(IPessoaService pessoaService, IMapper mapper)
         {
             this.pessoaService = pessoaService;
+            Mapper = mapper;
         }
 
         // GET: api/Pessoa
@@ -23,7 +28,8 @@ namespace Hex.Api.Controllers
         [ProducesResponseType(statusCode: 200, Type = typeof(Pessoa))]
         public async Task<ActionResult<IEnumerable<Pessoa>>> Get()
         {
-            return Ok(await pessoaService.GetAllPessoas());
+            var pessoas = Mapper.Map<IEnumerable<PessoaDto>>(await pessoaService.GetAllPessoas());
+            return Ok(pessoas);
         }
 
         // GET: api/Pessoa/5

@@ -44,7 +44,7 @@ namespace Hex.Infra.ConfigurationMap
                        .HasColumnType("varchar")
                        .HasMaxLength(50);
                     l.Property((e) => e.Estado)
-                       .HasColumnName("HealthPlan")
+                       .HasColumnName("Estado")
                        .HasColumnType("varchar")
                        .HasMaxLength(50);
                 });
