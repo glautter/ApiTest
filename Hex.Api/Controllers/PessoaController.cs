@@ -2,6 +2,7 @@
 using Hex.Application.Interfaces;
 using Hex.Domain.Dtos;
 using Hex.Domain.Entities;
+using Hex.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -69,11 +70,36 @@ namespace Hex.Api.Controllers
 
         // POST: api/Pessoa
         [HttpPost]
-        public async Task<ActionResult> Post(Pessoa pessoa)
+        public async Task<ActionResult> Post(ResponsePutPessoaDto pessoaModel)
         {
-            await pessoaService.SavePessoa(pessoa);
+            try
+            {
+                var pessoaDomain = new Pessoa
+                {
+                    Nome = pessoaModel.Nome,
+                    Documento = new Documento
+                    {
+                        Cpf = pessoaModel.Cpf
+                    },
+                    Idade = pessoaModel.Idade,
+                    Localidade = new Localidade
+                    {
+                        Cidade = pessoaModel.Cidade,
+                        Estado = pessoaModel.Estado
+                    },
+                    TipoEstadoCivil = (TipoEstadoCivil)pessoaModel.EstadoCivil
+                };
 
-            return CreatedAtAction(nameof(Post), new { id = pessoa.Id }, pessoa);
+                await pessoaService.SavePessoa(pessoaDomain);
+
+                return CreatedAtAction(nameof(Post), new { id = pessoaModel.Id }, pessoaModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BadHttpRequestException(ex.Message));
+            }
+
+
         }
 
         // DELETE: api/Pessoa/5
